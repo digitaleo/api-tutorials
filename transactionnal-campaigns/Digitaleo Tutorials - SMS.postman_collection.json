@@ -1,0 +1,535 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Digitaleo Tutorials - SMS",
+		"_postman_id": "1f8e1434-a928-9559-d25c-9af3b9d23885",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "How to send a SMS (unit)",
+			"description": "",
+			"item": [
+				{
+					"name": "Authentication",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var data = JSON.parse(responseBody);\r",
+									"postman.setGlobalVariable(\"token\", data.access_token);\r",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://oauth.messengeo.net/token",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "grant_type",
+									"type": "text",
+									"value": "client_credentials",
+									"warning": ""
+								},
+								{
+									"key": "client_id",
+									"type": "text",
+									"value": "*Your client_id*",
+									"warning": ""
+								},
+								{
+									"key": "client_secret",
+									"type": "text",
+									"value": "*Your client_secret*",
+									"warning": ""
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Sending a SMS",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"postman.setGlobalVariable(\"digitaleo.smsId\", data.list[0].id);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://sms.messengeo.net/rest/sms",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{  \r\n   \"text\":\"Hello #firstname# #lastname#, your package has been sent dispatched\",\r\n   \"date\":\"2017-05-07 11:12:25\",\r\n   \"contacts\":[  \r\n      {  \r\n         \"firstName\":\"Customer's first name\",\r\n         \"lastName\":\"Customer's last name\",\r\n         \"recipient\":\"+33600000001\"\r\n      }\r\n   ]\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Reading a SMS you sent",
+					"request": {
+						"url": {
+							"raw": "https://sms.messengeo.net/rest/sms?properties=DEFAULT,recipient,date,text,status&id={{digitaleo.smsId}}",
+							"protocol": "https",
+							"host": [
+								"sms",
+								"messengeo",
+								"net"
+							],
+							"path": [
+								"rest",
+								"sms"
+							],
+							"query": [
+								{
+									"key": "properties",
+									"value": "DEFAULT,recipient,date,text,status",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "id",
+									"value": "{{digitaleo.smsId}}",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Reading all the status of one SMS",
+					"request": {
+						"url": {
+							"raw": "https://sms.messengeo.net/rest/smsstatus?properties=DEFAULT,status,recipient,mailingId,date,description,code&smsId={{digitaleo.smsId}}",
+							"protocol": "https",
+							"host": [
+								"sms",
+								"messengeo",
+								"net"
+							],
+							"path": [
+								"rest",
+								"smsstatus"
+							],
+							"query": [
+								{
+									"key": "properties",
+									"value": "DEFAULT,status,recipient,mailingId,date,description,code",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "smsId",
+									"value": "{{digitaleo.smsId}}",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Deleting a SMS",
+					"request": {
+						"url": {
+							"raw": "https://sms.messengeo.net/rest/sms?id={{digitaleo.smsId}}",
+							"protocol": "https",
+							"host": [
+								"sms",
+								"messengeo",
+								"net"
+							],
+							"path": [
+								"rest",
+								"sms"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{digitaleo.smsId}}",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "How to send a SMS mailing",
+			"description": "",
+			"item": [
+				{
+					"name": "Authentication",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var data = JSON.parse(responseBody);\r",
+									"postman.setGlobalVariable(\"token\", data.access_token);\r",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://oauth.messengeo.net/token",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "grant_type",
+									"type": "text",
+									"value": "client_credentials",
+									"warning": ""
+								},
+								{
+									"key": "client_id",
+									"type": "text",
+									"value": "*Your client_id*",
+									"warning": ""
+								},
+								{
+									"key": "client_secret",
+									"type": "text",
+									"value": "*Your client_secret*",
+									"warning": ""
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Sending a mailing",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"postman.setGlobalVariable(\"digitaleo.mailingId\", data.list[0].id);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://sms.messengeo.net/rest/mailing",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{  \r\n   \"text\":\"Hello #firstname# #lastname#, your package has been sent dispatched\",\r\n   \"name\":\"Mailing\",\r\n   \"date\":\"2018-01-01 12:00:00\",\r\n   \"contacts\":[  \r\n      {  \r\n         \"firstName\":\"Customer's first name\",\r\n         \"lastName\":\"Customer's last name\",\r\n         \"recipient\":\"+33600000001\"\r\n      },\r\n      {\r\n         \"firstName\":\"Customer's first name\",\r\n         \"lastName\":\"Customer's last name\",\r\n         \"recipient\":\"+33600000002\"\r\n      }\r\n   ]\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Reading a mailing",
+					"request": {
+						"url": {
+							"raw": "https://sms.messengeo.net/rest/mailing?id={{digitaleo.mailingId}}&properties=DEFAULT,date",
+							"protocol": "https",
+							"host": [
+								"sms",
+								"messengeo",
+								"net"
+							],
+							"path": [
+								"rest",
+								"mailing"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{digitaleo.mailingId}}",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "properties",
+									"value": "DEFAULT,date",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Reading status",
+					"request": {
+						"url": {
+							"raw": "https://sms.messengeo.net/rest/status?properties=DEFAULT,status,recipient,mailingId,date,description,code&mailingId={{digitaleo.mailingId}}",
+							"protocol": "https",
+							"host": [
+								"sms",
+								"messengeo",
+								"net"
+							],
+							"path": [
+								"rest",
+								"status"
+							],
+							"query": [
+								{
+									"key": "properties",
+									"value": "DEFAULT,status,recipient,mailingId,date,description,code",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "mailingId",
+									"value": "{{digitaleo.mailingId}}",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Reading a queue of status",
+					"request": {
+						"url": {
+							"raw": "https://sms.messengeo.net/rest/status?properties=DEFAULT,status,recipient,mailingId,date,description&limit=3&action=queue",
+							"protocol": "https",
+							"host": [
+								"sms",
+								"messengeo",
+								"net"
+							],
+							"path": [
+								"rest",
+								"status"
+							],
+							"query": [
+								{
+									"key": "properties",
+									"value": "DEFAULT,status,recipient,mailingId,date,description",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "limit",
+									"value": "3",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "action",
+									"value": "queue",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Reading statistics",
+					"request": {
+						"url": {
+							"raw": "https://sms.messengeo.net/rest/stats?properties=DEFAULT&mailingId={{digitaleo.mailingId}}",
+							"protocol": "https",
+							"host": [
+								"sms",
+								"messengeo",
+								"net"
+							],
+							"path": [
+								"rest",
+								"stats"
+							],
+							"query": [
+								{
+									"key": "properties",
+									"value": "DEFAULT",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "mailingId",
+									"value": "{{digitaleo.mailingId}}",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Canceling a mailing",
+					"request": {
+						"url": {
+							"raw": "https://sms.messengeo.net/rest/mailing?id={{digitaleo.mailingId}}",
+							"protocol": "https",
+							"host": [
+								"sms",
+								"messengeo",
+								"net"
+							],
+							"path": [
+								"rest",
+								"mailing"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{digitaleo.mailingId}}",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
